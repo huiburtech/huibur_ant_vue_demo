@@ -18,7 +18,7 @@
 
         <h-form
         :items="items"
-        :column-num="2"
+        :column-num="1"
         ref="form"
         ></h-form>
     </a-modal>
@@ -72,6 +72,29 @@ const items = [
             label: "女",
         },
         ],
+    },
+    {
+        title: "体重",
+        value: "weight",
+        key: "weight",
+        placeholder: "请输入体重",
+        type: TYPE_ENUM.INPUT,
+        required: true,
+        disabled: false,
+        after: {
+            key: 'beforeName',
+            width: '60px',
+            selectItems: [
+                {
+                value: 0,
+                label: "公斤",
+                },
+                {
+                value: 1,
+                label: "斤",
+                },
+            ]
+        }
     },
     {
         title: "住址",
@@ -152,7 +175,7 @@ const items = [
         value: "singleCheck",
         key: "singleCheck",
         placeholder: "请选择",
-        type: TYPE_ENUM.SINGLE,
+        type: TYPE_ENUM.RADIO,
         required: true,
         selectItems: [
         {
