@@ -16,6 +16,7 @@
       :columns="columns"
       :list="list"
       :row-selection="rowSelection"
+      :expanded-row-items="expandedRowItems"
       @pageChange="handleListPageChange"
       @buttonClick="handleListButtonClick"
       ></h-table>
@@ -70,9 +71,9 @@ const columns = [
     title: '操作',
     dataIndex: 'operation',
     key: 'operation',
-    align: 'operation',
-    selectItems: [{label: '删除', value: 'delete', icon: 'delete'}, {label: '编辑', value: 'edit'}],
-    dataType: TYPE_ENUM.OPERATION,
+    align: 'center',
+    selectItems: [{label: '删除', value: 'delete', icon: 'delete', background: 'red', color: 'yellow'}, {label: '编辑', value: 'edit'}, {label: '操作', value: 'operat', selectItems: [{label: '删除', value: 'delete', icon: 'delete'}, {label: '编辑', value: 'edit', icon: 'delete'}]}],
+    dataType: TYPE_ENUM.ACTION,
   },
 ]
 
@@ -145,6 +146,7 @@ const searchBtnItems = [
     icon: 'search'
   }
 ]
+const expandedRowItems = [{label: '删除', value: 'delete', icon: 'delete'}, {label: '编辑', icon: 'edit', value: 'edit'}]
 
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -173,6 +175,7 @@ export default {
       searchItems,
       searchBtnItems,
       rowSelection,
+      expandedRowItems,
       list: [{identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
             {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
             {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},

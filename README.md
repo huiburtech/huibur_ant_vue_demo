@@ -3,7 +3,7 @@
 [TOC]
 ## 前言
 ### 基本说明
- 该组件库是基于Ant Design Vue 框架进行开发，旨在简化开发过程中大量无意义的重复代码工作。该组件的demo地址为：https://github.com/huiburtech/huibur_ant_vue_demo.git，该组件如果不能满足现有需求的话，可以关注公众号进行留言
+huibur-antd-vue是基于Ant Design Vue 框架进行开发，旨在简化开发过程中大量无意义的重复代码工作。该组件是根据公司项目场景中出现的各类问题，进行统一规范化封装处理，以减少非必要的一些编码及BUG修改工作。如果不能满足现有需求的话，可以关注公众号进行留言以便于进行组件扩展。demo地址为：https://github.com/huiburtech/huibur_ant_vue_demo.git
 ### 使用说明
 * 组件包下载方式：npm i huibur-antd-vue
 * npm导入方式：import {hSearch, hList} from 'huibur-antd-vue'   Vue.use(hSearch); Vue.use(hList);
@@ -12,7 +12,7 @@
 * 所有的公共方法均以  “_” 开头,即父组件禁止调用非  “_” 开头的方法
 * 组件统一入口为@/components/HB/index.js
 * const.js 中放置组件中使用的常量数据
-* demo账号： admin, 密码：admin
+* 该组件的构建文件中，未进行Ant Design of Vue组件的引入操作，需自行引入
 
 ## const.js
 ### TYPE_ENUM
@@ -140,6 +140,7 @@
 |  isPagination   | 是否需要分页  |  Boolean   | true  |  1.0   |
 |  list   | 数据数组  |  Array   | -  |  1.0   |
 |  rowSelection   | 列表项是否可选择，配置项  |  Object   | null |  1.0.19   |
+|  expandedRowItems   | 扩展行操作项  |  \[[SelectItem](#SelectItem)]   | null |  1.1.5   |
 
 
 #### 回调事件
@@ -177,27 +178,6 @@
 |  disabled   | 是否禁用  |  String    | -  |  1.0   |
 |  color   | 字体颜色  |  String   | -  |  1.0.21   |
 |  background   | 背景色  |  String   | -  |  1.0.21   |
-
-
-
----
-### UploadImg
-#### 属性
-|  参数   | 说明  |  类型   | 默认值  |  版本   |
-|  ----  | ----  |  ----  | ----  |  ----  |
-|  ref   | 需被注册  |  String   |- |  1.0   |
-|  imgSize   | 上传的数量  |  String   | '1' |  1.0   |
-|  accept |  上传的图片类型  |  String   | 'image/jpeg'  |  1.0   |
-
-#### 公共方法
-|  事件名称   | 说明  |  参数   |  版本   |
-|  ----  | ----  |  ----  | ----  |
-|  _dataProcessing   | 设置fileList中的键值  | [{url:xxxxx}]  |  1.0   |
-
-#### 回调事件
-|  事件名称   | 说明  |  回调参数   |  版本   |
-|  ----  | ----  |  ----  | ----  |
-|  uploadSucc   | 上传成功后或者删除成功后触发  |   Function(info); info:[fileList]; fileList：返回的图片模型数据 |  1.0   |
 
 
 ## 关注我们
