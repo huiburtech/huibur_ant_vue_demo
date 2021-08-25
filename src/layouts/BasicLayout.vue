@@ -1,168 +1,180 @@
 <template>
-  <div>
-    <pro-layout
-      :menus="menus"
-      :collapsed="collapsed"
-      :mediaQuery="query"
-      :isMobile="isMobile"
-      :handleMediaQuery="handleMediaQuery"
-      :handleCollapse="handleCollapse"
-      :i18nRender="i18nRender"
-      v-bind="settings"
-      :menuHeaderRender="false"
+  <a-layout id="basiclayout">
+    <a-layout-sider
+      width="200"
+      v-model="collapsed"
+      :trigger="null"
+      collapsible
+      :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }"
     >
-      <template v-slot:headerContentRender>
-        <div>
-          <a-tooltip title="刷新页面">
-            <a-icon type="reload" style="font-size: 18px;cursor: pointer;" @click="() => { $message.info('只是一个DEMO') }" />
-          </a-tooltip>
-        </div>
-      </template>
+      <div class="logo">
+        <img src="@/assets/logo.jpg" />
+        <h1 v-if="!collapsed">{{ UnitName }}</h1>
+      </div>
 
-      <setting-drawer v-if="isDev" :settings="settings" @change="handleSettingChange">
-        <div style="margin: 12px 0;">
-          This is SettingDrawer custom footer content.
-        </div>
-      </setting-drawer>
-      <template v-slot:rightContentRender>
-        <right-content :top-menu="settings.layout === 'topmenu'" :is-mobile="isMobile" :theme="settings.theme" />
-      </template>
-      <!-- custom footer / 自定义Footer -->
-      <template v-slot:footerRender>
-        <global-footer />
-      </template>
-      <router-view />
-    </pro-layout>
-  </div>
+      <a-menu
+        theme="dark"
+        mode="inline"
+        :selected-keys="[current]"
+        @click="handleMenuClick"
+      >
+        <template v-for="item in mainMenu">
+          <a-menu-item
+            v-if="!item.children || item.children.length == 0"
+            :key="item.name"
+            :title="item.meta.title"
+          >
+            <a-icon :type="item.meta.icon"></a-icon>
+            <span v-if="!collapsed">{{ item.meta.title }}</span>
+          </a-menu-item>
+          <sub-menu
+            v-else
+            :key="item.name"
+            :menu-info="item"
+            :collapsed="collapsed"
+          />
+        </template>
+      </a-menu>
+    </a-layout-sider>
+    <a-layout :style="{ marginLeft: collapsed ? '80px' : '256px' }">
+      <a-layout-header
+        class="header"
+        :style="{ background: '#fff', padding: '0 24px 0 0' }"
+      >
+        <a-icon
+          class="trigger"
+          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+          @click="() => (collapsed = !collapsed)"
+        />
+        <h2>{{ deftitle }}</h2>
+        <user-menu  :name="name"></user-menu>
+      </a-layout-header>
+
+      <a-layout-content
+        :style="{ height: '100%', overflow: 'auto', margin: '24px 24px 0px' }"
+      >
+        <router-view />
+      </a-layout-content>
+
+      <a-layout-footer style="text-align: center;padding: 8px 50px;">
+        {{ footer }}
+      </a-layout-footer>
+    </a-layout>
+  </a-layout>
 </template>
-
 <script>
-import { SettingDrawer, updateTheme } from '@ant-design-vue/pro-layout'
-import { i18nRender } from '@/locales'
-import { mapState } from 'vuex'
-import { CONTENT_WIDTH_TYPE, SIDEBAR_TYPE, TOGGLE_MOBILE_TYPE } from '@/store/mutation-types'
-
-import defaultSettings from '@/config/defaultSettings'
-import RightContent from '@/components/GlobalHeader/RightContent'
-import GlobalFooter from '@/components/GlobalFooter'
-import LogoSvg from '../assets/logo.svg?inline'
+import Vue from "vue";
+import { mapState, mapGetters } from "vuex";
+import UserMenu from "./UserMenu";
+import SubMenu from "./SubMenu.vue";
 
 export default {
-  name: 'BasicLayout',
   components: {
-    SettingDrawer,
-    RightContent,
-    GlobalFooter,
-    LogoSvg,    
+    UserMenu,
+    SubMenu,
   },
-  data () {
+  data() {
     return {
-      // preview.pro.antdv.com only use.
-      isProPreviewSite: process.env.VUE_APP_PREVIEW === 'true' && process.env.NODE_ENV !== 'development',
-      // end
-      isDev: process.env.NODE_ENV === 'development' || process.env.VUE_APP_PREVIEW === 'true',
-
-      // base
-      menus: [],
-      // 侧栏收起状态
       collapsed: false,
-      title: defaultSettings.title,
-      settings: {
-        // 布局类型
-        layout: defaultSettings.layout, // 'sidemenu', 'topmenu'
-        // CONTENT_WIDTH_TYPE
-        contentWidth: defaultSettings.layout === 'sidemenu' ? CONTENT_WIDTH_TYPE.Fluid : defaultSettings.contentWidth,
-        // 主题 'dark' | 'light'
-        theme: defaultSettings.navTheme,
-        // 主色调
-        primaryColor: defaultSettings.primaryColor,
-        fixedHeader: defaultSettings.fixedHeader,
-        fixSiderbar: defaultSettings.fixSiderbar,
-        colorWeak: defaultSettings.colorWeak,
-
-        hideHintAlert: false,
-        hideCopyButton: false
+      current: "Workplace",
+      deftitle: "HUIBUR",
+      UnitName: "HUIBUR",
+      mainMenu: [
+        {
+        path: '/dashboard',
+        name: 'dashboard',
+        redirect: '/dashboard/index',
+        meta: { title: '首页', keepAlive: true, icon: 'pic-center', permission: ['dashboard'] },
+        children: [
+          {
+            path: '/dashboard/index',
+            name: 'Workplace',
+            component: () => import('@/views/dashboard/index'),
+            meta: { title: '列表', icon: 'pic-center', keepAlive: true, permission: ['dashboard'] }
+          },
+        ]
       },
-      // 媒体查询
-      query: {},
-
-      // 是否手机模式
-      isMobile: false
-    }
+      ],
+      footer: "Copyright © Tianjin Huibur Technology Co., Ltd All Rights Reserved.",
+      name: "HHHHH",
+    };
+  },
+  props: {
+    title: {
+      type: String,
+      default: "合同履行监管信息管理系统",
+      required: false,
+    },
   },
   computed: {
-    ...mapState({
-      // 动态主路由
-      mainMenu: state => state.permission.addRouters
-    })
-  },
-  created () {
-    const routes = this.mainMenu.find(item => item.path === '/')
-    this.menus = (routes && routes.children) || []
-    // 处理侧栏收起状态
-    this.$watch('collapsed', () => {
-      this.$store.commit(SIDEBAR_TYPE, this.collapsed)
-    })
-    this.$watch('isMobile', () => {
-      this.$store.commit(TOGGLE_MOBILE_TYPE, this.isMobile)
-    })
-  },
-  mounted () {
-    const userAgent = navigator.userAgent
-    if (userAgent.indexOf('Edge') > -1) {
-      this.$nextTick(() => {
-        this.collapsed = !this.collapsed
-        setTimeout(() => {
-          this.collapsed = !this.collapsed
-        }, 16)
-      })
-    }
 
-    // first update color
-    // TIPS: THEME COLOR HANDLER!! PLEASE CHECK THAT!!
-    if (process.env.NODE_ENV !== 'production' || process.env.VUE_APP_PREVIEW === 'true') {
-      updateTheme(this.settings.primaryColor)
-    }
+
+  },
+  created() {
+  
+  },
+
+  mounted() {
+
+  },
+  watch: {
+    $route(to, from) {
+      this.current = to.name;
+    },
   },
   methods: {
-    i18nRender,
-    handleMediaQuery (val) {
-      this.query = val
-      if (this.isMobile && !val['screen-xs']) {
-        this.isMobile = false
-        return
-      }
-      if (!this.isMobile && val['screen-xs']) {
-        this.isMobile = true
-        this.collapsed = false
-        this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fluid
-        // this.settings.fixSiderbar = false
-      }
+  
+
+    handleMenuClick({ item, key, keyPath }) {
+
+      console.log(key)
+      this.current = key;
+
+      //左侧导航
+      this.$router.replace({ name: key, query: { title: item.title } });
     },
-    handleCollapse (val) {
-      this.collapsed = val
-    },
-    handleSettingChange ({ type, value }) {
-      console.log('type', type, value)
-      type && (this.settings[type] = value)
-      switch (type) {
-        case 'contentWidth':
-          this.settings[type] = value
-          break
-        case 'layout':
-          if (value === 'sidemenu') {
-            this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fluid
-          } else {
-            this.settings.fixSiderbar = false
-            this.settings.contentWidth = CONTENT_WIDTH_TYPE.Fixed
-          }
-          break
-      }
+  },
+};
+</script>
+<style lang="less">
+#basiclayout {
+  height: 100vh;
+
+  .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    height: 32px;
+    margin: 16px;
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 34px;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      margin-left: 10px;
     }
   }
 }
-</script>
-
-<style lang="less">
-@import "./BasicLayout.less";
 </style>

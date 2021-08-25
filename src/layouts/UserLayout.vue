@@ -3,7 +3,7 @@
     <img src="../assets/22.png" style="height:10vw;"><span class="size">HUIBUR-ANTD-VUE</span>
     <div class="container">
       <div class="user-layout-lang">
-        <select-lang class="select-lang-trigger" />
+        <!-- <select-lang class="select-lang-trigger" /> -->
       </div>
       <div class="user-layout-content">
         <div class="top">
@@ -37,12 +37,11 @@
 
 <script>
 import { deviceMixin } from '@/store/device-mixin'
-import SelectLang from '@/components/SelectLang'
 
 export default {
   name: 'UserLayout',
   components: {
-    SelectLang
+    
   },
   mixins: [deviceMixin],
   mounted () {

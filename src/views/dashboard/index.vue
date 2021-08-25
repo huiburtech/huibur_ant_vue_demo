@@ -1,7 +1,6 @@
 <template>
   <div class="contain">
-    
-    <h-search ref="search" :items="searchItems" :button-items="searchBtnItems" :column-num="4" @btnClick="handleSearchClick" @selectSearch="handleSelectSearch" @selectChange="handleSelectChange"></h-search>
+    <!-- <h-search ref="search" :items="searchItems" :button-items="searchBtnItems" :column-num="4" @btnClick="handleSearchClick" @selectSearch="handleSelectSearch" @selectChange="handleSelectChange"></h-search>
     
     <a-card>
         <a-button @click="handleAdd">新增</a-button>
@@ -23,17 +22,39 @@
 
       <detail ref="detail" @addSucc="handleAddSucc" @editSucc="handleEditSucc"/>
 
-      <h-confirm ref="confirm"/>
+      <h-confirm ref="confirm"/> -->
+
+      <h-list 
+        ref="list"
+        apiName="apps"
+        idKey = "appId"
+        :columns="columns" 
+        :rowSelected="true"
+        :pagination="pagination"
+        :searchItems="searchItems" 
+        :headerButtonItems="headerButtonItems"
+        :detailItems="detailItems"
+        :extParams="extParams"
+        @headerBtnClick="handleListHeaderBtnClick"
+        @searchBtnClick="handleListSearchBtnClick"
+        @tableBtnClick="handleListTableBtnClick"
+        @tableRowChange="handleListTableRowChange"
+        >
+      </h-list>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import {TYPE_ENUM, hSearch, hTable, hConfirm} from 'huibur-antd-vue'
-import Detail from './detail.vue'
-Vue.use(hSearch)
-Vue.use(hTable)
-Vue.use(hConfirm)
+import { TYPE_ENUM } from 'huibur-antd-vue'
+import hList from '../../components/page/list.vue'
+
+const headerButtonItems = [
+  {
+    title: '新建',
+    value: 'add'
+  }
+]
 
 const columns = [
   {
@@ -146,51 +167,207 @@ const searchBtnItems = [
     icon: 'search'
   }
 ]
-const expandedRowItems = [{label: '删除', value: 'delete', icon: 'delete'}, {label: '编辑', icon: 'edit', value: 'edit'}]
 
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+const detailItems = [
+  {
+    title: '标题',
+    children: [
+      {
+        title: "姓名",
+        value: "name",
+        key: "name",
+        placeholder: "请输入姓名",
+        type: TYPE_ENUM.INPUT,
+        required: true,
+        disabled: false,
+        length: 20,
+    },
+    {
+        title: "年龄",
+        value: "age",
+        key: "age",
+        placeholder: "请输入年龄",
+        type: TYPE_ENUM.INPUT_NUMBER,
+        required: true,
+        disabled: false,
+        max: 150,
+        min: 0,
+    },
+    {
+        title: "性别",
+        value: "gender",
+        key: "gender",
+        placeholder: "请选择性别",
+        type: TYPE_ENUM.SELECT,
+        required: true,
+        disabled: false,
+        selectItems: [
+        {
+            value: 0,
+            label: "男",
+        },
+        {
+            value: 1,
+            label: "女",
+        },
+        ],
+    },
+    {
+        title: "体重",
+        value: "weight",
+        key: "weight",
+        placeholder: "请输入体重",
+        type: TYPE_ENUM.INPUT,
+        required: true,
+        disabled: false,
+        after: {
+            key: 'beforeName',
+            width: '60px',
+            selectItems: [
+                {
+                value: 0,
+                label: "公斤",
+                },
+                {
+                value: 1,
+                label: "斤",
+                },
+            ]
+        }
+    },
+    {
+        title: "住址",
+        value: "address",
+        key: "address",
+        placeholder: "请选择住址",
+        type: TYPE_ENUM.SELECT_FILTER,
+        required: true,
+        disabled: false,
+        selectItems: [
+        {
+            value: 0,
+            label: "天津",
+        },
+        {
+            value: 1,
+            label: "北京",
+        },
+        {
+            value: 2,
+            label: "上海",
+        },
+        {
+            value: 3,
+            label: "重庆",
+        },
+        ],
+    },
+    {
+        title: "时间",
+        value: "date",
+        key: "date",
+        placeholder: "请选择时间",
+        type: TYPE_ENUM.DATEPICKER,
+        required: true,
+        disabled: false,
+        showTime: false,
+    },
+    {
+        title: "选择",
+        value: "check",
+        key: "check",
+        placeholder: "请选择",
+        type: TYPE_ENUM.CHECKBOX,
+        required: true,
+        disabled: false,
+        selectItems: [
+        {
+            value: 0,
+            label: "选择1",
+        },
+        {
+            value: 1,
+            label: "选择2",
+        },
+        {
+            value: 2,
+            label: "选择3",
+        },
+        {
+            value: 3,
+            label: "选择4",
+        },
+        ],
+    },
+    {
+        title: "备注",
+        value: "textArea",
+        key: "textArea",
+        placeholder: "请输入备注",
+        type: TYPE_ENUM.INPUT_TEXT_AREA,
+        required: true,
+        disabled: false,
+        length: 200,
+    },
+    {
+        title: "单个选择",
+        value: "singleCheck",
+        key: "singleCheck",
+        placeholder: "请选择",
+        type: TYPE_ENUM.RADIO,
+        required: true,
+        selectItems: [
+        {
+            value: 0,
+            label: "选择1",
+        },
+        {
+            value: 1,
+            label: "选择2",
+        },
+        {
+            value: 2,
+            label: "选择3",
+        },
+        {
+            value: 3,
+            label: "选择4",
+        },
+        ]
+    }]
+  }
+]
 
 export default {
   components: {
-    hSearch,
-    hTable,
-    hConfirm,
-    Detail
+    hList
   },
 
   data() {
     return {
       TYPE_ENUM,
-      columns,
+      headerButtonItems,
       searchItems,
       searchBtnItems,
-      rowSelection,
-      expandedRowItems,
-      list: [{identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
-            {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'}]
+      columns,
+      extParams: { projectId: this.$route.params.projectId },
+      pagination: { pageSize: 10, pageNum: 1, total: 10 },
+      detailItems
+    //   list: [{identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'},
+    //         {identityName: '状态标识项名称', identityCode: '状态标识项编号', id: '1'}]
     }
   },
 
@@ -200,70 +377,39 @@ export default {
   },
   methods: {
     //-------------------------------------事件--------------------------------------
-    // 添加方法
-    handleAdd () {
-      this.$refs.detail._show()
-    },
 
-    //-------------------------------------方法--------------------------------------
-   
 
-    //-------------------------------------网络轻轻--------------------------------------
-    // 网络请求-删除
-    requestDelete(val) {
-      console.log(val)
-    },  
 
-    //-------------------------------------通知--------------------------------------
-    // 搜索框-选择框进行搜索
-    handleSelectSearch(info) {
-      const {kw, item, form} = info
-
-    },
-
-    // 搜索框-选择框的进行选中事件
-    handleSelectChange(info) {
-      const {kw, item, form} = info
-
-    },
-
-    // 搜索框-搜索按钮点击事件
-    handleSearchClick(info) {
+    //-------------------------------------通知回调--------------------------------------
+    handleListHeaderBtnClick(info) {
+      console.log('handleListHeaderBtnClick')
       console.log(info)
     },
 
-    // list 分页
-    handleListPageChange(val) {
-      this.$refs.list._startLoading()
-      // 设置延迟执行
-      setTimeout(() => {
-        this.list = [
-          { identityName: '状态标识项名称', identityCode: '状态标识项编号测试', id: '1'},
-          { identityName: '状态标识项名称', identityCode: '状态标识项编号测试', id: '1'}]
-        this.$refs.list._stopLoading()
-      }, 1000)
+    handleListSearchBtnClick(info) {
+      console.log('handleListSearchBtnClick')
+      console.log(info)
     },
 
-    // 按钮点击事件
-    handleListButtonClick (val) {
-      if (val.val.value == 'edit') {
-        this.$refs.detail._show(val.info)
-      } else if (val.val.value == 'delete') {
-        this.$refs.confirm._show("确认删除？", '删除后不可恢复，请谨慎操作', (res) => {
-          this.requestDelete(val.info)
-        });
+    handleListTableBtnClick(info) {
+      // console.log('handleListTableBtnClick')
+      // console.log(info)
 
+      // this.$refs.list._refreshTable(info.info)
+
+
+      if (info.val.value === 'device') {
+        this.$router.push({ name: 'DevicesManagement', params: info.info })
+      }  else if (info.val.value === 'variable') {
+        this.$router.push({ name: 'Index2', params: info.info })
+      } else if (info.val.value === 'run') {
+        this.$router.push({ name: 'DataDiagnosis', params: info.info })
       }
     },
 
-    // 详情页-新增成功
-    handleAddSucc(info) {
-
-    },
-
-    // 详情页-编辑成功
-    handleEditSucc(info) {
-
+    handleListTableRowChange(info) {
+      console.log('handleListTableRowChange')
+      console.log(info)
     }
 
   },
