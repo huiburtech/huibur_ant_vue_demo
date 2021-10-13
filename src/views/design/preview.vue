@@ -19,13 +19,12 @@
         </template>
 
 
-        <!-- <h-list
-            v-if="form && form.formItems"
+        <h-list
             ref="list"
             :detailItems="form.formItems ? form.formItems : []" 
             :rowSelected="true"
             :searchItems="form.searchItems ? form.searchItems : []" 
-        /> -->
+        />
 
     </a-modal>
     

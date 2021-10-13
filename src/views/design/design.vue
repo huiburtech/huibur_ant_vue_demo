@@ -19,7 +19,6 @@
 
         
         <h-list 
-        v-if="form && form.formItems"
         ref="list"
         :detailItems="items" 
         :rowSelected="true"
