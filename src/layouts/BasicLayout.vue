@@ -36,7 +36,7 @@
         </template>
       </a-menu>
     </a-layout-sider>
-    <a-layout :style="{ marginLeft: collapsed ? '80px' : '256px' }">
+    <a-layout :style="{ marginLeft: collapsed ? '80px' : '200px' }">
       <a-layout-header
         class="header"
         :style="{ background: '#fff', padding: '0 24px 0 0' }"
@@ -47,7 +47,7 @@
           @click="() => (collapsed = !collapsed)"
         />
         <h2>{{ deftitle }}</h2>
-        <user-menu  :name="name"></user-menu>
+        <user-menu  :userInfo="userInfo"></user-menu>
       </a-layout-header>
 
       <a-layout-content
@@ -63,10 +63,12 @@
   </a-layout>
 </template>
 <script>
-import Vue from "vue";
-import { mapState, mapGetters } from "vuex";
+
 import UserMenu from "./UserMenu";
 import SubMenu from "./SubMenu.vue";
+import storage from 'store'
+
+import { asyncRouterMap } from '@/config/router.config'
 
 export default {
   components: {
@@ -79,39 +81,20 @@ export default {
       current: "Workplace",
       deftitle: "HUIBUR",
       UnitName: "HUIBUR",
-      mainMenu: [
-        {
-        path: '/dashboard',
-        name: 'dashboard',
-        redirect: '/dashboard/index',
-        meta: { title: '首页', keepAlive: true, icon: 'pic-center', permission: ['dashboard'] },
-        children: [
-          {
-            path: '/dashboard/index',
-            name: 'Workplace',
-            component: () => import('@/views/dashboard/index'),
-            meta: { title: '列表', icon: 'pic-center', keepAlive: true, permission: ['dashboard'] }
-          },
-        ]
-      },
-      ],
+      mainMenu: [],
       footer: "Copyright © Tianjin Huibur Technology Co., Ltd All Rights Reserved.",
-      name: "HHHHH",
+      userInfo: null,
+      asyncRouterMap
     };
-  },
-  props: {
-    title: {
-      type: String,
-      default: "合同履行监管信息管理系统",
-      required: false,
-    },
   },
   computed: {
 
 
   },
   created() {
-  
+
+    this.mainMenu = this.asyncRouterMap.filter(el => el.hidden != true)
+
   },
 
   mounted() {

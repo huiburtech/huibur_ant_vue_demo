@@ -21,8 +21,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import Vue from "vue";
+import { mapActions, mapGetters } from "vuex"
+
 export default {
   name: "UserMenu",
   components: {},

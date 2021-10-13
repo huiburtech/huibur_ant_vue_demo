@@ -9,36 +9,27 @@ const RouteView = {
 export const asyncRouterMap = [
   {
     path: '/',
-    name: 'Home',
-    component: BasicLayout,
-    meta: { title: '测试' },
-    redirect: { name: 'dashboard' },
-    children: [
-      // dashboard
-      {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: RouteView,
-        redirect: {name: 'Workplace'},
-        meta: { title: '首页', keepAlive: true, icon: '', permission: ['dashboard'] },
-        children: [
-          {
-            path: '/dashboard/index',
-            name: 'Workplace',
-            component: () => import('@/views/dashboard/index'),
-            meta: { title: '列表', keepAlive: true, permission: ['dashboard'] }
-          },
-        ]
-      },
-
-    ]
+    name: 'dashboard',
+    component: () => import('@/views/dashboard/index'),
+    meta: { title: '首页', keepAlive: true, icon: 'user', permission: ['dashboard'] },
   },
   {
-    path: '*',
-    redirect: '/404',
-    hidden: true
+    path: '/design',
+    name: 'design',
+    component: RouteView,
+    redirect: {name: 'designIndex'},
+    meta: { title: '表单设计', keepAlive: true, icon: 'user', permission: ['dashboard'] },
+    children: [
+      {
+        path: '/design/index',
+        name: 'designIndex',
+        component: () => import('@/views/design/index'),
+        meta: { title: '列表', keepAlive: true, icon: 'user', permission: ['dashboard'] }
+      }
+    ]
   }
 ]
+
 
 /**
  * 基础路由
@@ -73,9 +64,15 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: '/404',
     component: () => import(/* webpackChunkName: "fail" */ '@/views/404')
+  },
+  {
+    path: '',
+    redirect: {path: '/'},
+    component: BasicLayout,
+    meta: { title: '商户管理', keepAlive: true, icon: 'pic-center', permission: ['dashboard'] },
+    children: asyncRouterMap
   }
 ]

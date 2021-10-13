@@ -4,7 +4,7 @@
             <a-icon :type="menuInfo.meta.icon"></a-icon>
             <span v-if="!collapsed">{{ menuInfo.meta.title }}</span>
         </span>
-        <template v-for="item in menuInfo.children">
+        <template v-for="item in menuInfo.children.filter(el => el.hidden != true)">
             <a-menu-item v-if="!item.children || item.children.length == 0" :key="item.name" :title="item.mName">
                 <a-icon :type="item.meta.icon"></a-icon>
                 <span v-if="!collapsed">{{ item.meta.title }}</span>
@@ -26,8 +26,8 @@ export default {
     props: {
         ...Menu.SubMenu.props,
         menuInfo: {
-        type: Object,
-        default: () => ({}),
+            type: Object,
+            default: () => ({}),
         },
         collapsed: {
             type: Boolean
