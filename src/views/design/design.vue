@@ -17,8 +17,8 @@
             <div class="title">表单设计</div>
         </template>
 
-        
         <h-list 
+        v-if="form"
         ref="list"
         :detailItems="items" 
         :rowSelected="true"
@@ -366,21 +366,25 @@ export default {
     //-------------------------------------事件--------------------------------------
     // 取消
     handleCancel() {
-        this.form.formItems.map(el => {
-            if (el.selectItems) {
-                 el.selectItems = JSON.parse(el.selectItems)
-            }
-        })
-        this.visible = false
+        if (this.form.formatItems) {
+            this.form.formItems.forEach(element => {
+                if (element.selectItems) {
+                    element.selectItems = JSON.parse(element.selectItems)
+                }
+            })
+        }
+        
     },
 
     // 确认
     handleOk() {
-        this.form.formItems.map(el => {
-            if (el.selectItems) {
-                 el.selectItems = JSON.parse(el.selectItems)
-            }
-        })
+        if (this.form.formatItems) {
+            this.form.formItems.map(el => {
+                if (el.selectItems) {
+                    el.selectItems = JSON.parse(el.selectItems)
+                }
+            })
+        }
         this.$emit('ok', this.form)
 
         this.visible = false
@@ -392,11 +396,13 @@ export default {
 
         this.form = Object.assign({}, param)
 
-        this.form.formItems.map(el => {
-            if (el.selectItems) {
-                    el.selectItems = JSON.stringify(el.selectItems)
-            }
-        })
+        if (this.form.formatItems) {
+            this.form.formItems.map(el => {
+                if (el.selectItems) {
+                        el.selectItems = JSON.stringify(el.selectItems)
+                }
+            })
+        }
     },
 
     //-------------------------------------私有方法--------------------------------------
@@ -435,10 +441,8 @@ export default {
     },
 
     handleDelete(info) {
-      console.log(info)
-      this.form.formItems = this.form.formItems.filter(el => el.key != info.key)
-
-      console.log(this.form)
+        this.form.formItems = this.form.formItems.filter(el => el.key != info.key)
+        this.$forceUpdate()
     }
 
   },

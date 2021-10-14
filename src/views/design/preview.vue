@@ -20,10 +20,13 @@
 
 
         <h-list
+            v-if="form"
             ref="list"
             :detailItems="form.formItems ? form.formItems : []" 
             :rowSelected="true"
             :searchItems="form.searchItems ? form.searchItems : []" 
+             @detailOk="handleListDetailOk"
+            :dataSource="list"
         />
 
     </a-modal>
@@ -44,6 +47,7 @@ export default {
     return {
       visible: false,
       form: null,
+      list: []
     }
   },
 
@@ -73,7 +77,19 @@ export default {
     _show(form) {
         this.visible = true
         this.form = form 
+        this.list = []
     },
+
+    //-------------------------------------通知--------------------------------------
+    handleListDetailOk(info) {
+      var item = this.list.find(el => el[this.form.idKey] == info.form[this.form.idKey])
+      if (item) { // 编辑
+          var index = this.list.indexOf(item)
+          this.list.splice(index,1, info.form);
+      } else {
+          this.list.push(info.form)
+      }
+    }
 
 
   },

@@ -18,7 +18,7 @@
         </template>
 
         <a-textarea
-          disabled="true"
+          :disabled="true"
           v-model="text"
           :placeholder="text"
           :auto-size="{ minRows: 10, maxRows: 20 }"

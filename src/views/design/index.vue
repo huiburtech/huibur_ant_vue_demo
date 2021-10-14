@@ -66,6 +66,12 @@ const detailItems = [
         required: true,
     },
     {
+        title: '唯一标识字段',
+        key: 'idKey',
+        type: TYPE_ENUM.INPUT,
+        placeholder: '为空默认为"id"'
+    },
+    {
         title: '是否分页',
         key: 'pagination',
         type: TYPE_ENUM.SELECT,
@@ -91,7 +97,7 @@ const detailItems = [
         key: 'operation',
         align: 'center',
         selectItems: [
-          {label: '操作', value: 'operation', selectItems: [{label: '编辑', value: 'edit', icon: 'edit'}, {label: '删除', value: 'h_delete', icon: 'delete'}]},
+          {label: '操作', value: 'operation', selectItems: [{label: '编辑', value: 'edit', icon: 'edit'}, {label: '删除', value: 'delete', icon: 'delete'}]},
           {label: '设计', value: 'design', selectItems: [{label: '表单设计', value: 'formDesign', icon: 'form'}, {label: '搜索设计', value: 'searchDesign', icon: 'bg-colors'}]},
           {label: '生成JSON', value: 'generateJson', selectItems: [{label: '生成表单', value: 'generateForm', icon: 'generate'}, {label: '生成搜索', value: 'generateSearch', icon: 'generate'}]},
           {label: '预览', value: 'preview', icon: 'eye'}
