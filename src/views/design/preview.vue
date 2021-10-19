@@ -22,7 +22,10 @@
         <h-list
             v-if="form"
             ref="list"
-            :detailItems="form.formItems ? form.formItems : []" 
+            :apiName="form.apiName"
+            :header="form.header ? JSON.parse(form.header) : null"
+            :detailItems="form.detailItems ? form.detailItems : []" 
+            :isPagination="form.isPagination || false"
             :rowSelected="true"
             :searchItems="form.searchItems ? form.searchItems : []" 
              @detailOk="handleListDetailOk"
@@ -82,6 +85,9 @@ export default {
 
     //-------------------------------------通知--------------------------------------
     handleListDetailOk(info) {
+      if (this.form.apiName) {
+        return
+      }
       var item = this.list.find(el => el[this.form.idKey] == info.form[this.form.idKey])
       if (item) { // 编辑
           var index = this.list.indexOf(item)

@@ -18,11 +18,10 @@
         </template>
 
         <h-list 
-        v-if="form"
         ref="list"
         :detailItems="items" 
         :rowSelected="true"
-        :dataSource="form.formItems ? form.formItems : []"
+        :dataSource="list"
         detailWidth="80%"
         dividerOrientation="center"
         @detailOk="handleDetailOK"
@@ -296,6 +295,17 @@ const items = [
         title: '其他属性',
         children: [
             {
+                title: "是否作为搜索项",
+                key: "isSearch",
+                type: TYPE_ENUM.SELECT,
+                defaultValue: 0,
+                selectItems: [
+                    {label: '否', value: 0},
+                    {label: '是', value: 1}
+                ],
+                tableHidden: true
+            },
+            {
                 title: "是否必填",
                 key: "required",
                 type: TYPE_ENUM.SELECT,
@@ -350,7 +360,9 @@ export default {
       items,
       visible: false,
       loading: false,
-      form: {},
+      type: null, // ‘form’, 表单 // search，搜索
+      identify: '',
+      list: [],
     }
   },
 
@@ -366,43 +378,47 @@ export default {
     //-------------------------------------事件--------------------------------------
     // 取消
     handleCancel() {
-        if (this.form.formatItems) {
-            this.form.formItems.forEach(element => {
-                if (element.selectItems) {
-                    element.selectItems = JSON.parse(element.selectItems)
-                }
-            })
-        }
+
+        this.list.forEach(element => {
+            if (element.selectItems) {
+                element.selectItems = JSON.parse(element.selectItems)
+            }
+        })
+    
         
     },
 
     // 确认
     handleOk() {
-        if (this.form.formatItems) {
-            this.form.formItems.map(el => {
-                if (el.selectItems) {
-                    el.selectItems = JSON.parse(el.selectItems)
-                }
-            })
+        this.list.forEach(el => {
+            if (el.selectItems) {
+                el.selectItems = JSON.parse(el.selectItems)
+            }
+        })
+
+        var info = {
+            identify: this.identify,
+            type: this.type,
+            list: this.list
         }
-        this.$emit('ok', this.form)
+        this.$emit('ok', info)
 
         this.visible = false
     },
 
     //-------------------------------------公共方法--------------------------------------
-    _show(param) {
+    _show(identify, type, list) {
         this.visible = true
+        
+        this.identify = identify
+        this.type = type
+        this.list = Object.assign([], list) || []
 
-        this.form = Object.assign({}, param)
-
-        if (this.form.formatItems) {
-            this.form.formItems.map(el => {
-                if (el.selectItems) {
-                        el.selectItems = JSON.stringify(el.selectItems)
-                }
-            })
-        }
+        this.list.forEach(el => {
+            if (el.selectItems) {
+                    el.selectItems = JSON.stringify(el.selectItems)
+            }
+        })
     },
 
     //-------------------------------------私有方法--------------------------------------
@@ -414,26 +430,24 @@ export default {
     //-------------------------------------回调通知--------------------------------------
     handleDetailOK(info) {
 
-        console.log(info.form)
-
         if (info.valid == false) {
             return
         }
 
-        if (!this.form.formItems) {
-            this.form.formItems = []
+        if (!this.list) {
+            this.list = []
         }   
 
-        var item = this.form.formItems.find(el => el.key == info.form.key)
+        var item = this.list.find(el => el.key == info.form.key)
         if (item) { // 编辑
-            var index = this.form.formItems.indexOf(item)
-            this.form.formItems[index] = info.form
+            var index = this.list.indexOf(item)
+            this.list[index] = info.form
         } else {
-            this.form.formItems.push(info.form)
+            this.list.push(info.form)
         }
 
         // 排序
-        this.form.formItems.sort(function(a, b) {
+        this.list.sort(function(a, b) {
             return (a.sort || 0) - (b.sort || 0)
         })
         
@@ -441,7 +455,7 @@ export default {
     },
 
     handleDelete(info) {
-        this.form.formItems = this.form.formItems.filter(el => el.key != info.key)
+        this.list = this.list.filter(el => el.key != info.key)
         this.$forceUpdate()
     }
 

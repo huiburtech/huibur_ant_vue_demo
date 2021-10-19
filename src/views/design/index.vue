@@ -55,7 +55,7 @@ const detailItems = [
     },
     {
         title: '模块标识',
-        key: 'identity',
+        key: 'identify',
         type: TYPE_ENUM.INPUT,
         required: true,
     },
@@ -64,6 +64,13 @@ const detailItems = [
         key: 'apiName',
         type: TYPE_ENUM.INPUT,
         required: true,
+    },
+    {
+        title: '请求头',
+        key: 'header',
+        type: TYPE_ENUM.INPUT,
+        placeholder: '例: { "token": "eyJhbGciOiJIUzUxMiJ" }',
+        tableHidden: true
     },
     {
         title: '唯一标识字段',
@@ -98,8 +105,8 @@ const detailItems = [
         align: 'center',
         selectItems: [
           {label: '操作', value: 'operation', selectItems: [{label: '编辑', value: 'edit', icon: 'edit'}, {label: '删除', value: 'delete', icon: 'delete'}]},
-          {label: '设计', value: 'design', selectItems: [{label: '表单设计', value: 'formDesign', icon: 'form'}, {label: '搜索设计', value: 'searchDesign', icon: 'bg-colors'}]},
-          {label: '生成JSON', value: 'generateJson', selectItems: [{label: '生成表单', value: 'generateForm', icon: 'generate'}, {label: '生成搜索', value: 'generateSearch', icon: 'generate'}]},
+          {label: '设计', value: 'design', icon: 'highlight'},
+          {label: '生成JSON', value: 'generateJson', icon: 'share-alt'},
           {label: '预览', value: 'preview', icon: 'eye'}
         ],
         dataType: TYPE_ENUM.ACTION,
@@ -150,15 +157,11 @@ export default {
     },
 
     handleListTableBtnClick(info) {
-      if (info.val.value == 'formDesign') {
-        this.$refs.design._show(info.info)
-      } else if (info.val.value == 'searchDesign') {
-        this.$refs.design._show(info.info)
-      } else if (info.val.value == 'generateForm') {
-        console.log(info.info.formItems)
-        this.$refs.generate._show(JSON.stringify(info.info.formItems))
-      } else if (info.val.value == 'generateSearch') {
-        console.log(info.info)
+      var form = info.info
+      if (info.val.value == 'design') {
+        this.$refs.design._show(form.identify, 'form', form.detailItems)
+      } else if (info.val.value == 'generateJson') {
+        this.$refs.generate._show(JSON.stringify(info.info))
       } else if (info.val.value == 'preview') {
         this.$refs.preview._show(JSON.parse(JSON.stringify(info.info)))
       } 
@@ -170,8 +173,17 @@ export default {
 
     handleDesignOk(info) {
       this.list.forEach(el => {
-        if (el.identity == info.identity) {
-          el.formItems = info.formItems
+        if (el.identify == info.identify) {
+            el.detailItems = info.list
+
+            var searchItems = []
+            el.detailItems.forEach(element => {
+              if (element.isSearch) {
+                searchItems.push(element)
+              }
+            })
+
+            el.searchItems = searchItems
         }
       }) 
       console.log(this.list)
@@ -179,7 +191,7 @@ export default {
 
     handleListDetailOk(info) {
 
-      var item = this.list.find(el => el.identity == info.form.identity)
+      var item = this.list.find(el => el.identify == info.form.identify)
       if (item) { // 编辑
           var index = this.list.indexOf(item)
           this.list.splice(index,1, info.form);
@@ -190,7 +202,7 @@ export default {
     },
 
     handleDelete(info) {
-      this.list = this.list.filter(el => el.identity != info.identity)
+      this.list = this.list.filter(el => el.identify != info.identify)
     }
 
   },
